@@ -2,19 +2,23 @@ class Word {
   
   float xPosition,
         yPosition,
+        zPosition,
         size;
         
   String word;
   
   PGraphics layer;
   
-  Word(String _word, float initX, float initY) {
+  Word(String _word, float initX, float initY, float initZ) {
     word = _word;
     xPosition = initX;
     yPosition = initY;
+    zPosition = initZ;
+    size = 24 * zPosition;
   }
-  
+
   void display() {
+    layer.textSize(size);
     layer.text(word, xPosition, yPosition);
   }
   
