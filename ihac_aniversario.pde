@@ -29,13 +29,14 @@ void setup() {
   // load the words
   wordsList = loadStrings("data/top_dog_names.txt");
   println("there are " + wordsList.length + " lines");
-  word = new Word[wordsList.length];
-  for (int i = 0; i < wordsList.length; i++) {
+  word = new Word[50];
+  for (int i = 0; i < word.length; i++) {
     float extraRange = 250;
-    float x = random(-extraRange, width + extraRange);
-    float y = random(-extraRange, height + extraRange);
+    float verticalMargin = 10;
+    float x = random(-extraRange, width);
+    float y = random(verticalMargin, height -verticalMargin);
     float z = random(0.5, 1);
-    word[i] = new Word(wordsList[i], x, y, z);
+    word[i] = new Word(wordsList, x, y, z);
   }
 
   // load the stars
@@ -86,10 +87,10 @@ void draw() {
    star[i].display();
   }
   
-   for (int i = 0; i < wordsList.length; i++) {
-     word[i].getLayer(topLayer);
-     word[i].move(1);
-     word[i].display();
+   for (int i = 0; i < word.length; i++) {
+      word[i].getLayer(topLayer);
+      word[i].move(1);
+      word[i].display();
    }
   topLayer.endDraw();
 

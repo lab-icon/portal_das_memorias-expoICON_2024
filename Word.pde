@@ -6,11 +6,13 @@ class Word {
         size;
         
   String word;
+  String[] wordsList;
   
   PGraphics layer;
   
-  Word(String _word, float initX, float initY, float initZ) {
-    word = _word;
+  Word(String[] _wordsList, float initX, float initY, float initZ) {
+    wordsList = _wordsList;
+    word = wordsList[int(random(wordsList.length))];
     xPosition = initX;
     yPosition = initY;
     zPosition = initZ;
@@ -23,11 +25,12 @@ class Word {
   }
   
   void move(float speed) {
-    xPosition += speed;
+    xPosition += speed / (zPosition * 2);
     
-    if (xPosition > layer.width + 250) {
+    if (xPosition > layer.width) {
       xPosition = -250;
       yPosition = random(20, layer.height - 20);
+      word = wordsList[int(random(wordsList.length))];
     }
   }
   
