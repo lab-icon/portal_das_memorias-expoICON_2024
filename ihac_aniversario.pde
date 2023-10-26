@@ -33,7 +33,7 @@ void setup() {
   for (int i = 0; i < word.length; i++) {
     float extraRange = 250;
     float verticalMargin = 10;
-    float x = random(-extraRange, width + extraRange);
+    float x = random(-extraRange, width);
     float y = random(verticalMargin, height -verticalMargin);
     float z = random(0.5, 1);
     word[i] = new Word(wordsList, x, y, z);

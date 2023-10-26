@@ -27,7 +27,7 @@ class Word {
   void move(float speed) {
     xPosition += speed / (zPosition * 2);
     
-    if (xPosition > layer.width + 250) {
+    if (xPosition > layer.width) {
       xPosition = -250;
       yPosition = random(20, layer.height - 20);
       word = wordsList[int(random(wordsList.length))];
