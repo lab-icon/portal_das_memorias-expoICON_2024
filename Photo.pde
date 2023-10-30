@@ -16,4 +16,8 @@ class Photo {
   void getLayer(PGraphics _layer) {
     layer = _layer;
   }
+
+  void changePhoto(String ulr) {
+    photo = loadImage(ulr);
+  }
 }

@@ -45,11 +45,15 @@ void setup() {
     star[i] = new Star(x, y, 1, 3);
   }
 
-  photo = new Photo[44];
+  int photoResolution = 180;
+  int photoClumns = width / photoResolution;
+  int photoRows = height / photoResolution;
+  int photoAmount = photoClumns * photoRows;
+  photo = new Photo[photoAmount];
   for (int i = 0; i < photo.length; i++) {
-    float x = floor(i / 4) * 90;
-    float y = floor(i % 4) * 90;
-    photo[i] = new Photo("photos/shiba_90x90.jpg", x, y);
+    float x = floor(i / photoRows) * photoResolution;
+    float y = floor(i % photoRows) * photoResolution;
+    photo[i] = new Photo("photos/"+int(random(8))+"_"+photoResolution+"x"+photoResolution+".jpg", x, y);
   }
   
   // setup kinect
@@ -114,6 +118,9 @@ void draw() {
   // background layer
   bgLayer.beginDraw();
   bgLayer.background(100, 200, 0);
+  if (random(1) < 0.2) {
+    photo[int(random(photo.length))].changePhoto("photos/"+int(random(8))+"_180x180.jpg");
+  }
   for (int i = 0; i < photo.length; i++) {
     photo[i].getLayer(bgLayer);
     photo[i].display();
