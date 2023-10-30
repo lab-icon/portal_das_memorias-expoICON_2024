@@ -1,26 +1,24 @@
 // import libraries
 import KinectPV2.*;
-//import spout.*;
 
 // declare variables
 KinectPV2 kinect;
 Word word[];
 Star star[];
+Photo photo[];
 
 boolean foundUsers = false;
 
 PGraphics topLayer, bgLayer;
 PGraphics mask;
 
-PImage shiba;
+// PImage shiba;
 //PImage[] shiba;
 PImage kinectInput;
 
 String[] wordsList;
 
 boolean keepAspectRatio = true;
-
-//Spout spout;
 
 void setup() {
   size(960, 360, P3D);
@@ -46,6 +44,13 @@ void setup() {
     float y = random(0, height);
     star[i] = new Star(x, y, 1, 3);
   }
+
+  photo = new Photo[44];
+  for (int i = 0; i < photo.length; i++) {
+    float x = floor(i / 4) * 90;
+    float y = floor(i % 4) * 90;
+    photo[i] = new Photo("photos/shiba_90x90.jpg", x, y);
+  }
   
   // setup kinect
   kinect = new KinectPV2(this);  
@@ -66,8 +71,8 @@ void setup() {
   // shiba[i] = loadImage("photos/shiba_90x90.jpg"); 
   //}
   
-  shiba = loadImage("shiba.jpg");
-  shiba.resize(0, height);
+  // shiba = loadImage("shiba.jpg");
+  // shiba.resize(0, height);
   
   //setup spout
   //spout = new Spout(this);
@@ -109,10 +114,14 @@ void draw() {
   // background layer
   bgLayer.beginDraw();
   bgLayer.background(100, 200, 0);
+  for (int i = 0; i < photo.length; i++) {
+    photo[i].getLayer(bgLayer);
+    photo[i].display();
+  }
   //for (int i = 0; i < shiba.length; i++) {
   //  bgLayer.image(shiba[i], width/2, height/2);
   //}
-  bgLayer.image(shiba, width/3, 0);
+  // bgLayer.image(shiba, width/3, 0);
   bgLayer.image(topLayer, 0, 0);
   bgLayer.endDraw();
   
