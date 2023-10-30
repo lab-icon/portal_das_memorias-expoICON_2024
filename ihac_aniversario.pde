@@ -4,8 +4,11 @@ import KinectPV2.*;
 // declare variables
 KinectPV2 kinect;
 Word word[];
+String[] wordsList;
 Star star[];
 Photo photo[];
+
+int photoResolution;
 
 boolean foundUsers = false;
 
@@ -16,7 +19,6 @@ PGraphics mask;
 //PImage[] shiba;
 PImage kinectInput;
 
-String[] wordsList;
 
 boolean keepAspectRatio = true;
 
@@ -45,15 +47,15 @@ void setup() {
     star[i] = new Star(x, y, 1, 3);
   }
 
-  int photoResolution = 180;
-  int photoClumns = width / photoResolution;
+  photoResolution = 45;
+  int photoClumns = width / photoResolution + 1;
   int photoRows = height / photoResolution;
   int photoAmount = photoClumns * photoRows;
   photo = new Photo[photoAmount];
   for (int i = 0; i < photo.length; i++) {
-    float x = floor(i / photoRows) * photoResolution;
-    float y = floor(i % photoRows) * photoResolution;
-    photo[i] = new Photo("photos/"+int(random(8))+"_"+photoResolution+"x"+photoResolution+".jpg", x, y);
+    int x = floor(i / photoRows) * photoResolution;
+    int y = floor(i % photoRows) * photoResolution;
+    photo[i] = new Photo("fotos_escolhidas_"+photoResolution+"x"+photoResolution+"/foto"+int(random(755))+".jpg", x, y);
   }
   
   // setup kinect
@@ -119,7 +121,7 @@ void draw() {
   bgLayer.beginDraw();
   bgLayer.background(100, 200, 0);
   if (random(1) < 0.2) {
-    photo[int(random(photo.length))].changePhoto("photos/"+int(random(8))+"_180x180.jpg");
+    photo[int(random(photo.length))].changePhoto("fotos_escolhidas_"+photoResolution+"x"+photoResolution+"/foto"+int(random(755))+".jpg");
   }
   for (int i = 0; i < photo.length; i++) {
     photo[i].getLayer(bgLayer);
