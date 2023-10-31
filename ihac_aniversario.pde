@@ -1,8 +1,11 @@
 // import libraries
 import KinectPV2.*;
+import gab.opencv.*;
 
 // declare variables
 KinectPV2 kinect;
+OpenCV opencv;
+
 Word word[];
 String[] wordsList;
 Star star[];
@@ -19,6 +22,13 @@ PGraphics mask;
 PImage kinectInput;
 
 boolean keepAspectRatio = true;
+
+//opencv variables
+float polygonFactor = 1;
+int threshold = 80;
+int maxD = 1800;
+int minD = 1200;
+boolean    contourBodyIndex = false;
 
 void setup() {
   size(960*2, 360*2, P3D);
@@ -44,6 +54,7 @@ void setup() {
     star[i] = new Star(x, y, 1, 3);
   }
 
+  // load the photos
   photoResolution = 45;
   totalOfPhotos = 669;
   int photoClumns = width / photoResolution + 1;
@@ -58,8 +69,13 @@ void setup() {
   
   // setup kinect
   kinect = new KinectPV2(this);  
-  kinect.enableBodyTrackImg(true);  
+  kinect.enableDepthImg(true);
+  // kinect.enableBodyTrackImg(true);
+  kinect.enablePointCloud(true);
   kinect.init();
+
+  // setup opencv
+  opencv = new OpenCV(this, 512, 424);
   
   // setup layers
   topLayer = createGraphics(width, height);  
@@ -81,20 +97,24 @@ void draw() {
   }
   for (int i = 0; i < word.length; i++) {
     word[i].getLayer(topLayer);
-    word[i].move(1);
+    word[i].move(1.2);
     word[i].display();
   }
   topLayer.endDraw();
 
   // mask
   mask.beginDraw();
-  kinectInput = kinect.getBodyTrackImage();
-  if (keepAspectRatio) {
-    mask.image(kinectInput, width*0.5, height, width, width*1.2);
-  }
-  else {
-    mask.image(kinectInput, width*0.5, height*0.5, width, height);
-  }
+  // kinectInput = kinect.getBodyTrackImage();
+  // if (keepAspectRatio) {
+  //   mask.image(kinectInput, width*0.5, height, width, width*1.2);
+  // }
+  // else {
+  //   mask.image(kinectInput, width*0.5, height*0.5, width, height);
+  // }
+  
+  // mask.image(kinectInput, width/2, height/2);
+  mask.background(255);
+  opencvContour();
   mask.endDraw();
 
   topLayer.mask(mask);
@@ -124,4 +144,41 @@ void draw() {
 void mousePressed() {
   keepAspectRatio = !keepAspectRatio;
   println(keepAspectRatio);
+}
+
+void opencvContour() {
+  noFill();
+  strokeWeight(3);
+  if (contourBodyIndex) {
+    opencv.loadImage(kinect.getBodyTrackImage());
+    opencv.gray();
+    opencv.threshold(threshold);
+    PImage dst = opencv.getOutput();
+  } else {
+    opencv.loadImage(kinect.getPointCloudDepthImage());
+    opencv.gray();
+    opencv.threshold(threshold);
+    PImage dst = opencv.getOutput();
+  }
+
+  ArrayList<Contour> contours = opencv.findContours(false, false);
+
+  if (contours.size() > 0) {
+    for (Contour contour : contours) {
+
+      contour.setPolygonApproximationFactor(polygonFactor);
+      if (contour.numPoints() > 50) {
+        mask.noStroke();
+        mask.fill(0);
+        mask.beginShape();
+
+        for (PVector point : contour.getPolygonApproximation ().getPoints()) {
+          mask.vertex(point.x * 2.5, point.y * 2.5);
+        }
+        mask.endShape();
+      }
+    }
+  }
+  kinect.setLowThresholdPC(minD);
+  kinect.setHighThresholdPC(maxD);
 }
