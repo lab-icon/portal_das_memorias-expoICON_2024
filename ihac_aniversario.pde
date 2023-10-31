@@ -9,6 +9,7 @@ Star star[];
 Photo photo[];
 
 int photoResolution;
+int totalOfPhotos;
 
 boolean foundUsers = false;
 
@@ -44,14 +45,15 @@ void setup() {
   }
 
   photoResolution = 45;
+  totalOfPhotos = 669;
   int photoClumns = width / photoResolution + 1;
   int photoRows = height / photoResolution;
-  int photoAmount = photoClumns * photoRows;
-  photo = new Photo[photoAmount];
+  int displayedPhotos = photoClumns * photoRows;
+  photo = new Photo[displayedPhotos];
   for (int i = 0; i < photo.length; i++) {
     int x = floor(i / photoRows) * photoResolution;
     int y = floor(i % photoRows) * photoResolution;
-    photo[i] = new Photo("fotos_escolhidas_"+photoResolution+"x"+photoResolution+"/foto"+int(random(755))+".jpg", x, y);
+    photo[i] = new Photo("fotos_escolhidas_"+photoResolution+"x"+photoResolution+"/foto"+int(random(totalOfPhotos))+".jpg", x, y);
   }
   
   // setup kinect
@@ -100,8 +102,8 @@ void draw() {
   // background layer
   bgLayer.beginDraw();
   bgLayer.background(100, 200, 0);
-  if (random(1) < 0.2) {
-    photo[int(random(photo.length))].changePhoto("fotos_escolhidas_"+photoResolution+"x"+photoResolution+"/foto"+int(random(755))+".jpg");
+  if (random(1) < 0.6) {
+    photo[int(random(photo.length))].changePhoto("fotos_escolhidas_"+photoResolution+"x"+photoResolution+"/foto"+int(random(totalOfPhotos))+".jpg");
   }
   for (int i = 0; i < photo.length; i++) {
     photo[i].getLayer(bgLayer);
