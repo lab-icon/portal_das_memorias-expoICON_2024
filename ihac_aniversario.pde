@@ -56,7 +56,8 @@ void setup() {
     float x = random(-extraRange, width);
     float y = random(verticalMargin, height -verticalMargin);
     float z = random(0.5, 1);
-    word[i] = new Word(wordsList, x, y, z);
+    String firstWord = wordsList[int(random(wordsList.length))];
+    word[i] = new Word(firstWord, x, y, z);
     word[i].getLayer(topLayer);
   }
 
@@ -216,6 +217,7 @@ void drawTopLayer() {
   }
   for (int i = 0; i < word.length; i++) {
     word[i].move(1.2);
+    word[i].resetPosition(wordsList[int(random(wordsList.length))]);
     word[i].display();
   }
   topLayer.endDraw();

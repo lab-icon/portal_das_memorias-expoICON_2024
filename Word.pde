@@ -10,9 +10,8 @@ class Word {
   
   PGraphics layer;
   
-  Word(String[] _wordsList, float initX, float initY, float initZ) {
-    wordsList = _wordsList;
-    word = wordsList[int(random(wordsList.length))];
+  Word(String firstWord, float initX, float initY, float initZ) {
+    word = firstWord;
     xPosition = initX;
     yPosition = initY;
     zPosition = initZ;
@@ -26,17 +25,16 @@ class Word {
   
   void move(float speed) {
     xPosition += speed / (zPosition * 2);
-    
+    isOffScreen = false;
+  }
+
+  void resetPosition (String newWord) {
     if (xPosition > layer.width) {
       xPosition = -250;
       yPosition = random(20, layer.height - 20);
-      word = wordsList[int(random(wordsList.length))];
+      word = newWord;
     }
   }
-
-  // void changeWord(String[] wordsList) {
-  //   word = wordsList[int(random(wordsList.length))];
-  // }
   
   void getLayer(PGraphics _layer) {
     layer = _layer;
