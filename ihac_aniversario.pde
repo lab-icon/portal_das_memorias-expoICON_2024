@@ -21,14 +21,17 @@ PGraphics mask;
 
 PImage kinectInput;
 
-boolean keepAspectRatio = true;
-
 //opencv variables
 float polygonFactor = 1;
 int threshold = 80;
 int maxD = 1800;
 int minD = 1200;
 boolean    contourBodyIndex = false;
+
+// toggle variables
+boolean toggleFPS = true;
+boolean keepAspectRatio = true;
+boolean toggleOpencv = true;
 
 void setup() {
   size(960*2, 360*2, P3D);
@@ -70,7 +73,7 @@ void setup() {
   // setup kinect
   kinect = new KinectPV2(this);  
   kinect.enableDepthImg(true);
-  // kinect.enableBodyTrackImg(true);
+  kinect.enableBodyTrackImg(true);
   kinect.enablePointCloud(true);
   kinect.init();
 
@@ -91,7 +94,8 @@ void draw() {
   drawTopLayer();
   
   // mask
-  drawMaskLayer();
+  drawMaskLayer(!toggleOpencv);
+  drawOpencvMaskLayer(toggleOpencv);
   topLayer.mask(mask);
 
   // background layer
@@ -101,9 +105,28 @@ void draw() {
   image(bgLayer,0,0);
   
   // draw the frame rate
-  textSize(60);
-  fill(255,0,0);
-  text(frameRate, 50, 90);
+  displayFPS(toggleFPS);
+}
+
+void keyReleased() {
+  if (key == 'f') {
+    toggleFPS = !toggleFPS;
+  }
+  if (key == '0') {
+    keepAspectRatio = !keepAspectRatio;
+  }
+  if (key == '1') {
+    toggleOpencv = !toggleOpencv;
+  
+  }
+}
+
+void displayFPS(boolean showFPS) {
+  if (showFPS) {
+    fill(255,0,0);
+    textSize(60);
+    text(frameRate, 50, 90);
+  }
 }
 
 void mousePressed() {
@@ -164,20 +187,28 @@ void drawTopLayer() {
   topLayer.endDraw();
 }
 
-void drawMaskLayer() {
-  mask.beginDraw();
-  // kinectInput = kinect.getBodyTrackImage();
-  // if (keepAspectRatio) {
-  //   mask.image(kinectInput, width*0.5, height, width, width*1.2);
-  // }
-  // else {
-  //   mask.image(kinectInput, width*0.5, height*0.5, width, height);
-  // }
-  
-  // mask.image(kinectInput, width/2, height/2);
-  mask.background(255);
-  opencvContour();
-  mask.endDraw();
+void drawMaskLayer(boolean useKinect) {
+  if (useKinect) {
+    mask.beginDraw();
+    kinectInput = kinect.getBodyTrackImage();
+    if (keepAspectRatio) {
+      mask.image(kinectInput, width*0.5, height, width, width*1.2);
+    }
+    else {
+      mask.image(kinectInput, width*0.5, height*0.5, width, height);
+    }
+    // mask.image(kinectInput, width/2, height/2);
+    mask.endDraw();
+  }
+}
+
+void drawOpencvMaskLayer(boolean useOpencv) {
+  if (useOpencv) {
+    mask.beginDraw();
+    mask.background(255);
+    opencvContour();
+    mask.endDraw();
+  }
 }
 
 void drawBgLayer() {
