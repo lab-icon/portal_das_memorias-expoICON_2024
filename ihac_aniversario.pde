@@ -88,51 +88,16 @@ void setup() {
 
 void draw() {  
   // top layer
-  topLayer.beginDraw();
-  topLayer.background(0);
-  for (int i = 0; i < star.length; i++) {
-   star[i].getLayer(topLayer);
-   star[i].blink(0.05);
-   star[i].display();
-  }
-  for (int i = 0; i < word.length; i++) {
-    word[i].getLayer(topLayer);
-    word[i].move(1.2);
-    word[i].display();
-  }
-  topLayer.endDraw();
-
+  drawTopLayer();
+  
   // mask
-  mask.beginDraw();
-  // kinectInput = kinect.getBodyTrackImage();
-  // if (keepAspectRatio) {
-  //   mask.image(kinectInput, width*0.5, height, width, width*1.2);
-  // }
-  // else {
-  //   mask.image(kinectInput, width*0.5, height*0.5, width, height);
-  // }
-  
-  // mask.image(kinectInput, width/2, height/2);
-  mask.background(255);
-  opencvContour();
-  mask.endDraw();
-
+  drawMaskLayer();
   topLayer.mask(mask);
-  
+
   // background layer
-  bgLayer.beginDraw();
-  bgLayer.background(100, 200, 0);
-  if (random(1) < 0.6) {
-    photo[int(random(photo.length))].changePhoto("fotos_escolhidas_"+photoResolution+"x"+photoResolution+"/foto"+int(random(totalOfPhotos))+".jpg");
-  }
-  for (int i = 0; i < photo.length; i++) {
-    photo[i].getLayer(bgLayer);
-    photo[i].display();
-  }
-  bgLayer.image(topLayer, 0, 0);
-  bgLayer.endDraw();
-  
-  // draw the layers
+  drawBgLayer();
+
+  // display the layers
   image(bgLayer,0,0);
   
   // draw the frame rate
@@ -181,4 +146,50 @@ void opencvContour() {
   }
   kinect.setLowThresholdPC(minD);
   kinect.setHighThresholdPC(maxD);
+}
+
+void drawTopLayer() {
+  topLayer.beginDraw();
+  topLayer.background(0);
+  for (int i = 0; i < star.length; i++) {
+   star[i].getLayer(topLayer);
+   star[i].blink(0.05);
+   star[i].display();
+  }
+  for (int i = 0; i < word.length; i++) {
+    word[i].getLayer(topLayer);
+    word[i].move(1.2);
+    word[i].display();
+  }
+  topLayer.endDraw();
+}
+
+void drawMaskLayer() {
+  mask.beginDraw();
+  // kinectInput = kinect.getBodyTrackImage();
+  // if (keepAspectRatio) {
+  //   mask.image(kinectInput, width*0.5, height, width, width*1.2);
+  // }
+  // else {
+  //   mask.image(kinectInput, width*0.5, height*0.5, width, height);
+  // }
+  
+  // mask.image(kinectInput, width/2, height/2);
+  mask.background(255);
+  opencvContour();
+  mask.endDraw();
+}
+
+void drawBgLayer() {
+  bgLayer.beginDraw();
+  bgLayer.background(100, 200, 0);
+  if (random(1) < 0.6) {
+    photo[int(random(photo.length))].changePhoto("fotos_escolhidas_"+photoResolution+"x"+photoResolution+"/foto"+int(random(totalOfPhotos))+".jpg");
+  }
+  for (int i = 0; i < photo.length; i++) {
+    photo[i].getLayer(bgLayer);
+    photo[i].display();
+  }
+  bgLayer.image(topLayer, 0, 0);
+  bgLayer.endDraw();
 }
