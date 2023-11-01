@@ -14,6 +14,8 @@ Photo photo[];
 int photoResolution;
 int totalOfPhotos;
 
+float maskScaleFactor = 1;
+
 boolean foundUsers = false;
 
 PGraphics topLayer, bgLayer;
@@ -23,18 +25,26 @@ PImage kinectInput;
 
 //opencv variables
 float polygonFactor = 1;
-int threshold = 80;
+int threshold = 30;
 int maxD = 1800;
 int minD = 1200;
 boolean    contourBodyIndex = false;
 
-// toggle variables
+// toggleable variables
 boolean toggleFPS = true;
 boolean keepAspectRatio = true;
 boolean toggleOpencv = true;
 
 void setup() {
-  size(960*2, 360*2, P3D);
+  size(960*1, 360*1, P3D);
+
+  // setup layers
+  topLayer = createGraphics(width, height);  
+  
+  bgLayer = createGraphics(width, height);
+  
+  mask = createGraphics(width,height);
+  mask.imageMode(CENTER);
   
   // load the words
   wordsList = loadStrings("data/top_dog_names.txt");
@@ -47,6 +57,7 @@ void setup() {
     float y = random(verticalMargin, height -verticalMargin);
     float z = random(0.5, 1);
     word[i] = new Word(wordsList, x, y, z);
+    word[i].getLayer(topLayer);
   }
 
   // load the stars
@@ -55,6 +66,7 @@ void setup() {
     float x = random(0, width);
     float y = random(0, height);
     star[i] = new Star(x, y, 1, 3);
+    star[i].getLayer(topLayer);
   }
 
   // load the photos
@@ -79,14 +91,6 @@ void setup() {
 
   // setup opencv
   opencv = new OpenCV(this, 512, 424);
-  
-  // setup layers
-  topLayer = createGraphics(width, height);  
-  
-  bgLayer = createGraphics(width, height);
-  
-  mask = createGraphics(width,height);
-  mask.imageMode(CENTER);
 }
 
 void draw() {  
@@ -119,6 +123,38 @@ void keyReleased() {
     toggleOpencv = !toggleOpencv;
   
   }
+  if (key == 'h') {
+    threshold += 10;
+    println("threshold: " + threshold);
+  }
+  if (key == 'b') {
+    threshold -= 10;
+    println("threshold: " + threshold);
+  }
+  if (key == 'j') {
+    minD += 10;
+    println("minD: " + minD);
+  }
+  if (key == 'n') {
+    minD -= 10;
+    println("minD: " + minD);
+  }
+  if (key == 'k') {
+    maxD += 10;
+    println("maxD: " + maxD);
+  }
+  if (key == 'm') {
+    maxD -= 10;
+    println("maxD: " + maxD);
+  }
+  if (key == 'g') {
+    maskScaleFactor += 0.1;
+    println("maskScaleFactor: " + maskScaleFactor);
+  }
+  if (key == 'v') {
+    maskScaleFactor -= 0.1;
+    println("maskScaleFactor: " + maskScaleFactor);
+  }
 }
 
 void displayFPS(boolean showFPS) {
@@ -129,10 +165,10 @@ void displayFPS(boolean showFPS) {
   }
 }
 
-void mousePressed() {
-  keepAspectRatio = !keepAspectRatio;
-  println(keepAspectRatio);
-}
+// void mousePressed() {
+//   keepAspectRatio = !keepAspectRatio;
+//   println(keepAspectRatio);
+// }
 
 void opencvContour() {
   noFill();
@@ -161,7 +197,7 @@ void opencvContour() {
         mask.beginShape();
 
         for (PVector point : contour.getPolygonApproximation ().getPoints()) {
-          mask.vertex(point.x * 2.5, point.y * 2.5);
+          mask.vertex(point.x * maskScaleFactor, point.y * maskScaleFactor);
         }
         mask.endShape();
       }
@@ -175,12 +211,10 @@ void drawTopLayer() {
   topLayer.beginDraw();
   topLayer.background(0);
   for (int i = 0; i < star.length; i++) {
-   star[i].getLayer(topLayer);
    star[i].blink(0.05);
    star[i].display();
   }
   for (int i = 0; i < word.length; i++) {
-    word[i].getLayer(topLayer);
     word[i].move(1.2);
     word[i].display();
   }

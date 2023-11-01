@@ -33,6 +33,10 @@ class Word {
       word = wordsList[int(random(wordsList.length))];
     }
   }
+
+  // void changeWord(String[] wordsList) {
+  //   word = wordsList[int(random(wordsList.length))];
+  // }
   
   void getLayer(PGraphics _layer) {
     layer = _layer;

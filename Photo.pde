@@ -9,15 +9,19 @@ class Photo {
     photo = loadImage(ulr);
   }
   
-  void display(){ 
-   layer.image(photo, xPosition, yPosition);
+  void display(){
+    if (photo != null) {
+      layer.image(photo, xPosition, yPosition);
+    }
   }
   
   void getLayer(PGraphics _layer) {
     layer = _layer;
   }
 
-  void changePhoto(String ulr) {
-    photo = loadImage(ulr);
+  void changePhoto(String url) {
+    if (url != null) {
+      photo = loadImage(url);
+    }
   }
 }
