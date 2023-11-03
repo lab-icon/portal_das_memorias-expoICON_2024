@@ -6,7 +6,7 @@ class Word {
         size;
         
   String word;
-  String[] wordsList;
+  // String[] wordsList;
   
   PGraphics layer;
   
@@ -25,7 +25,6 @@ class Word {
   
   void move(float speed) {
     xPosition += speed / (zPosition * 2);
-    isOffScreen = false;
   }
 
   void resetPosition (String newWord) {

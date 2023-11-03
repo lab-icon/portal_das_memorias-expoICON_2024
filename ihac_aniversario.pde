@@ -14,8 +14,7 @@ Photo photo[];
 int photoResolution;
 int totalOfPhotos;
 
-float maskScaleFactor = 1;
-
+float maskScaleFactor = 2.5;
 boolean foundUsers = false;
 
 PGraphics topLayer, bgLayer;
@@ -36,7 +35,7 @@ boolean keepAspectRatio = true;
 boolean toggleOpencv = true;
 
 void setup() {
-  size(960*1, 360*1, P3D);
+  size(960*2, 360*2, P3D);
 
   // setup layers
   topLayer = createGraphics(width, height);  
@@ -99,7 +98,7 @@ void draw() {
   drawTopLayer();
   
   // mask
-  drawMaskLayer(!toggleOpencv);
+  // drawMaskLayer(!toggleOpencv);
   drawOpencvMaskLayer(toggleOpencv);
   topLayer.mask(mask);
 
@@ -217,7 +216,9 @@ void drawTopLayer() {
   }
   for (int i = 0; i < word.length; i++) {
     word[i].move(1.2);
-    word[i].resetPosition(wordsList[int(random(wordsList.length))]);
+    // String nextWord = "wordsList[int(random(wordsList.length))]";
+    String nextWord = wordsList[int(random(wordsList.length))];
+    word[i].resetPosition(nextWord);
     word[i].display();
   }
   topLayer.endDraw();
