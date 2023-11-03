@@ -4,16 +4,18 @@ class Word {
         yPosition,
         zPosition,
         size;
-        
+
+  float diraction;
+
   String word;
-  // String[] wordsList;
   
-  Word(String firstWord, float initX, float initY, float initZ) {
+  Word(String firstWord, float initX, float initY, float initZ, float _direction) {
     word = firstWord;
     xPosition = initX;
     yPosition = initY;
     zPosition = initZ;
     size = 24 * zPosition;
+    diraction = _direction;
   }
 
   void display(PGraphics layer) {
@@ -22,8 +24,8 @@ class Word {
   }
   
   boolean move(float speed) {
-    xPosition += speed / (zPosition * 2);
-    if (xPosition > width) {
+    xPosition += (speed / (zPosition * 2)) * diraction;
+    if (diraction == 1 && xPosition > width + 250 || diraction == -1 && xPosition < -250) {
       return true;
     } else {
       return false;
@@ -31,9 +33,15 @@ class Word {
   }
 
   void resetPosition (String newWord, int layerHeight) {
-    xPosition = -250;
+    diraction = random(1) > 0.5 ? 1 : -1;
+    if (diraction == 1) {
+      xPosition = -250;
+    } else {
+      xPosition = width + 250;
+    }
+    // xPosition =  * diraction;
     yPosition = random(20, layerHeight - 20);
     word = newWord;
-  }
+  } 
   
 }

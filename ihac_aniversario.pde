@@ -47,16 +47,17 @@ void setup() {
   
   // load the words
   loadJSON();
-  println("there are " + wordList.length + " lines");
+  float wordExtraRange = 250;
+  float wordVerticalMargin = 20;
+  textAlign(CENTER, CENTER);
   word = new Word[50];
   for (int i = 0; i < word.length; i++) {
-    float extraRange = 250;
-    float verticalMargin = 10;
-    float x = random(-extraRange, width);
-    float y = random(verticalMargin, height -verticalMargin);
+    float x = random(-wordExtraRange, width + wordExtraRange);
+    float y = random(wordVerticalMargin, height -wordVerticalMargin);
     float z = random(0.5, 1.5);
+    float diraction = random(1) < 0.5 ? -1 : 1;
     String firstWord = wordList[int(random(wordList.length))];
-    word[i] = new Word(firstWord, x, y, z);
+    word[i] = new Word(firstWord, x, y, z, diraction);
   }
 
   // load the stars
@@ -97,7 +98,7 @@ void loadJSON() {
   wordList = new String[wordJSON.size()];
   for (int i = 0; i < wordJSON.size(); i++) {
     JSONObject word = wordJSON.getJSONObject(i);
-    String wordText = word.getString("word");
+    String wordText = word.getString("replaced");
     wordList[i] = wordText;
   }
 }
@@ -121,63 +122,13 @@ void draw() {
   displayFPS(toggleFPS);
 }
 
-void keyReleased() {
-  if (key == 'f') {
-    toggleFPS = !toggleFPS;
-  }
-  if (key == '0') {
-    keepAspectRatio = !keepAspectRatio;
-  }
-  if (key == '1') {
-    toggleOpencv = !toggleOpencv;
-  
-  }
-  if (key == 'h') {
-    threshold += 10;
-    println("threshold: " + threshold);
-  }
-  if (key == 'b') {
-    threshold -= 10;
-    println("threshold: " + threshold);
-  }
-  if (key == 'j') {
-    minD += 10;
-    println("minD: " + minD);
-  }
-  if (key == 'n') {
-    minD -= 10;
-    println("minD: " + minD);
-  }
-  if (key == 'k') {
-    maxD += 10;
-    println("maxD: " + maxD);
-  }
-  if (key == 'm') {
-    maxD -= 10;
-    println("maxD: " + maxD);
-  }
-  if (key == 'g') {
-    maskScaleFactor += 0.1;
-    println("maskScaleFactor: " + maskScaleFactor);
-  }
-  if (key == 'v') {
-    maskScaleFactor -= 0.1;
-    println("maskScaleFactor: " + maskScaleFactor);
-  }
-}
-
 void displayFPS(boolean showFPS) {
   if (showFPS) {
     fill(255,0,0);
     textSize(60);
-    text(frameRate, 50, 90);
+    text(frameRate, 100, 90);
   }
 }
-
-// void mousePressed() {
-//   keepAspectRatio = !keepAspectRatio;
-//   println(keepAspectRatio);
-// }
 
 void opencvContour() {
   noFill();
@@ -224,7 +175,7 @@ void drawTopLayer() {
    star[i].display();
   }
   for (int i = 0; i < word.length; i++) {
-    if (word[i].move(1.2)) {
+    if (word[i].move(1.8)) {
       String nextWord = wordList[int(random(wordList.length))];
       word[i].resetPosition(nextWord, topLayer.height);
     }
@@ -269,4 +220,49 @@ void drawBgLayer() {
   }
   bgLayer.image(topLayer, 0, 0);
   bgLayer.endDraw();
+}
+
+void keyReleased() {
+  if (key == 'f') {
+    toggleFPS = !toggleFPS;
+  }
+  if (key == '0') {
+    keepAspectRatio = !keepAspectRatio;
+  }
+  if (key == '1') {
+    toggleOpencv = !toggleOpencv;
+  
+  }
+  if (key == 'h') {
+    threshold += 10;
+    println("threshold: " + threshold);
+  }
+  if (key == 'b') {
+    threshold -= 10;
+    println("threshold: " + threshold);
+  }
+  if (key == 'j') {
+    minD += 10;
+    println("minD: " + minD);
+  }
+  if (key == 'n') {
+    minD -= 10;
+    println("minD: " + minD);
+  }
+  if (key == 'k') {
+    maxD += 10;
+    println("maxD: " + maxD);
+  }
+  if (key == 'm') {
+    maxD -= 10;
+    println("maxD: " + maxD);
+  }
+  if (key == 'g') {
+    maskScaleFactor += 0.1;
+    println("maskScaleFactor: " + maskScaleFactor);
+  }
+  if (key == 'v') {
+    maskScaleFactor -= 0.1;
+    println("maskScaleFactor: " + maskScaleFactor);
+  }
 }
