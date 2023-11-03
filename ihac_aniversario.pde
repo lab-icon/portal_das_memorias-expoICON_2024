@@ -6,8 +6,8 @@ import gab.opencv.*;
 KinectPV2 kinect;
 OpenCV opencv;
 
+String[] wordList;
 Word word[];
-String[] wordsList;
 Star star[];
 Photo photo[];
 
@@ -46,18 +46,17 @@ void setup() {
   mask.imageMode(CENTER);
   
   // load the words
-  wordsList = loadStrings("data/top_dog_names.txt");
-  println("there are " + wordsList.length + " lines");
+  loadJSON();
+  println("there are " + wordList.length + " lines");
   word = new Word[50];
   for (int i = 0; i < word.length; i++) {
     float extraRange = 250;
     float verticalMargin = 10;
     float x = random(-extraRange, width);
     float y = random(verticalMargin, height -verticalMargin);
-    float z = random(0.5, 1);
-    String firstWord = wordsList[int(random(wordsList.length))];
+    float z = random(0.5, 1.5);
+    String firstWord = wordList[int(random(wordList.length))];
     word[i] = new Word(firstWord, x, y, z);
-    word[i].getLayer(topLayer);
   }
 
   // load the stars
@@ -93,12 +92,22 @@ void setup() {
   opencv = new OpenCV(this, 512, 424);
 }
 
+void loadJSON() {
+  JSONArray wordJSON = loadJSONArray("data/wordList.json");
+  wordList = new String[wordJSON.size()];
+  for (int i = 0; i < wordJSON.size(); i++) {
+    JSONObject word = wordJSON.getJSONObject(i);
+    String wordText = word.getString("word");
+    wordList[i] = wordText;
+  }
+}
+
 void draw() {  
   // top layer
   drawTopLayer();
   
   // mask
-  // drawMaskLayer(!toggleOpencv);
+  drawMaskLayer(!toggleOpencv);
   drawOpencvMaskLayer(toggleOpencv);
   topLayer.mask(mask);
 
@@ -215,11 +224,11 @@ void drawTopLayer() {
    star[i].display();
   }
   for (int i = 0; i < word.length; i++) {
-    word[i].move(1.2);
-    // String nextWord = "wordsList[int(random(wordsList.length))]";
-    String nextWord = wordsList[int(random(wordsList.length))];
-    word[i].resetPosition(nextWord);
-    word[i].display();
+    if (word[i].move(1.2)) {
+      String nextWord = wordList[int(random(wordList.length))];
+      word[i].resetPosition(nextWord, topLayer.height);
+    }
+    word[i].display(topLayer);
   }
   topLayer.endDraw();
 }

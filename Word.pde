@@ -8,8 +8,6 @@ class Word {
   String word;
   // String[] wordsList;
   
-  PGraphics layer;
-  
   Word(String firstWord, float initX, float initY, float initZ) {
     word = firstWord;
     xPosition = initX;
@@ -18,25 +16,24 @@ class Word {
     size = 24 * zPosition;
   }
 
-  void display() {
+  void display(PGraphics layer) {
     layer.textSize(size);
     layer.text(word, xPosition, yPosition);
   }
   
-  void move(float speed) {
+  boolean move(float speed) {
     xPosition += speed / (zPosition * 2);
-  }
-
-  void resetPosition (String newWord) {
-    if (xPosition > layer.width) {
-      xPosition = -250;
-      yPosition = random(20, layer.height - 20);
-      word = newWord;
+    if (xPosition > width) {
+      return true;
+    } else {
+      return false;
     }
   }
-  
-  void getLayer(PGraphics _layer) {
-    layer = _layer;
+
+  void resetPosition (String newWord, int layerHeight) {
+    xPosition = -250;
+    yPosition = random(20, layerHeight - 20);
+    word = newWord;
   }
   
 }
