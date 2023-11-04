@@ -18,6 +18,8 @@ class Photo {
   void changePhoto(String url) {
     if (url != null) {
       photo = loadImage(url);
+    } else {
+      println("Error: " + url + " is null");
     }
   }
 }

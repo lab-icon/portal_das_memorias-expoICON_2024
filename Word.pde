@@ -19,17 +19,15 @@ class Word {
   }
 
   void display(PGraphics layer) {
-    layer.textSize(size);
-    layer.text(word, xPosition, yPosition);
+    if (word != null) {
+      layer.textSize(size);
+      layer.text(word, xPosition, yPosition);
+    }
   }
   
   boolean move(float speed) {
     xPosition += (speed / (zPosition * 2)) * diraction;
-    if (diraction == 1 && xPosition > width + 250 || diraction == -1 && xPosition < -250) {
-      return true;
-    } else {
-      return false;
-    }
+    return diraction == 1 && xPosition > width + 250 || diraction == -1 && xPosition < -250;
   }
 
   void resetPosition (String newWord, int layerHeight) {
