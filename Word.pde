@@ -39,7 +39,6 @@ class Word {
     } else {
       xPosition = width + 250;
     }
-    // xPosition =  * diraction;
     yPosition = random(20, layerHeight - 20);
     word = newWord;
   } 

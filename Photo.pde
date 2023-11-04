@@ -9,14 +9,10 @@ class Photo {
     photo = loadImage(ulr);
   }
   
-  void display(){
+  void display(PGraphics layer){
     if (photo != null) {
       layer.image(photo, xPosition, yPosition);
     }
-  }
-  
-  void getLayer(PGraphics _layer) {
-    layer = _layer;
   }
 
   void changePhoto(String url) {

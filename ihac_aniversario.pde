@@ -27,7 +27,7 @@ float polygonFactor = 1;
 int threshold = 30;
 int maxD = 1800;
 int minD = 1200;
-boolean    contourBodyIndex = false;
+boolean contourBodyIndex = false;
 
 // toggleable variables
 boolean toggleFPS = true;
@@ -66,7 +66,6 @@ void setup() {
     float x = random(0, width);
     float y = random(0, height);
     star[i] = new Star(x, y, 1, 3);
-    star[i].getLayer(topLayer);
   }
 
   // load the photos
@@ -108,7 +107,6 @@ void draw() {
   drawTopLayer();
   
   // mask
-  drawMaskLayer(!toggleOpencv);
   drawOpencvMaskLayer(toggleOpencv);
   topLayer.mask(mask);
 
@@ -131,31 +129,21 @@ void displayFPS(boolean showFPS) {
 }
 
 void opencvContour() {
-  noFill();
-  strokeWeight(3);
-  if (contourBodyIndex) {
-    opencv.loadImage(kinect.getBodyTrackImage());
-    opencv.gray();
-    opencv.threshold(threshold);
-    PImage dst = opencv.getOutput();
-  } else {
-    opencv.loadImage(kinect.getPointCloudDepthImage());
-    opencv.gray();
-    opencv.threshold(threshold);
-    PImage dst = opencv.getOutput();
-  }
+  boolean contourBodyIndex = false;
+  opencv.loadImage(kinect.getPointCloudDepthImage());
+  opencv.gray();
+  opencv.threshold(threshold);
+  PImage dst = opencv.getOutput();
 
   ArrayList<Contour> contours = opencv.findContours(false, false);
 
   if (contours.size() > 0) {
     for (Contour contour : contours) {
-
       contour.setPolygonApproximationFactor(polygonFactor);
       if (contour.numPoints() > 50) {
         mask.noStroke();
         mask.fill(0);
         mask.beginShape();
-
         for (PVector point : contour.getPolygonApproximation ().getPoints()) {
           mask.vertex(point.x * maskScaleFactor, point.y * maskScaleFactor);
         }
@@ -172,7 +160,7 @@ void drawTopLayer() {
   topLayer.background(0);
   for (int i = 0; i < star.length; i++) {
    star[i].blink(0.05);
-   star[i].display();
+   star[i].display(topLayer);
   }
   for (int i = 0; i < word.length; i++) {
     if (word[i].move(1.8)) {
@@ -182,21 +170,6 @@ void drawTopLayer() {
     word[i].display(topLayer);
   }
   topLayer.endDraw();
-}
-
-void drawMaskLayer(boolean useKinect) {
-  if (useKinect) {
-    mask.beginDraw();
-    kinectInput = kinect.getBodyTrackImage();
-    if (keepAspectRatio) {
-      mask.image(kinectInput, width*0.5, height, width, width*1.2);
-    }
-    else {
-      mask.image(kinectInput, width*0.5, height*0.5, width, height);
-    }
-    // mask.image(kinectInput, width/2, height/2);
-    mask.endDraw();
-  }
 }
 
 void drawOpencvMaskLayer(boolean useOpencv) {
@@ -215,8 +188,7 @@ void drawBgLayer() {
     photo[int(random(photo.length))].changePhoto("fotos_escolhidas_"+photoResolution+"x"+photoResolution+"/foto"+int(random(totalOfPhotos))+".jpg");
   }
   for (int i = 0; i < photo.length; i++) {
-    photo[i].getLayer(bgLayer);
-    photo[i].display();
+    photo[i].display(bgLayer);
   }
   bgLayer.image(topLayer, 0, 0);
   bgLayer.endDraw();
@@ -225,9 +197,6 @@ void drawBgLayer() {
 void keyReleased() {
   if (key == 'f') {
     toggleFPS = !toggleFPS;
-  }
-  if (key == '0') {
-    keepAspectRatio = !keepAspectRatio;
   }
   if (key == '1') {
     toggleOpencv = !toggleOpencv;
