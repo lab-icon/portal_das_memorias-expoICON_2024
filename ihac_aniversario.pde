@@ -26,7 +26,6 @@ int photoResolution;
 int totalOfPhotos;
 
 float maskScaleFactor = 2.5;
-boolean foundUsers = false;
 
 PGraphics topLayer, bgLayer;
 PGraphics mask;
@@ -43,16 +42,21 @@ boolean contourBodyIndex = false;
 // toggleable variables
 boolean toggleFPS = true;
 
+// canvas variables
+int canvasWidth = 1920;
+int canvasHeight = 720;
+
 void setup() {
   // size(960*2, 360*2, P3D);
   fullScreen(P3D);
+  imageMode(CENTER);
 
   // setup layers
-  topLayer = createGraphics(width, height);  
+  topLayer = createGraphics(canvasWidth, canvasHeight);  
   
-  bgLayer = createGraphics(width, height);
+  bgLayer = createGraphics(canvasWidth, canvasHeight);
   
-  mask = createGraphics(width,height);
+  mask = createGraphics(canvasWidth, canvasHeight);
   mask.imageMode(CENTER);
   
   // load the words
@@ -114,6 +118,8 @@ void loadJSON() {
 }
 
 void draw() {  
+  background(0);
+
   // top layer
   drawTopLayer();
   
@@ -125,7 +131,7 @@ void draw() {
   drawBgLayer();
 
   // display the layers
-  image(bgLayer,0,0);
+  image(bgLayer,width/2,height/2);
   
   // draw the frame rate
   displayFPS(toggleFPS);
