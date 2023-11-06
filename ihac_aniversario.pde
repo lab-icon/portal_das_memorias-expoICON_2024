@@ -31,8 +31,6 @@ boolean contourBodyIndex = false;
 
 // toggleable variables
 boolean toggleFPS = true;
-boolean keepAspectRatio = true;
-boolean toggleOpencv = true;
 
 void setup() {
   size(960*2, 360*2, P3D);
@@ -84,8 +82,9 @@ void setup() {
   // setup kinect
   kinect = new KinectPV2(this);  
   kinect.enableDepthImg(true);
-  kinect.enableBodyTrackImg(true);
   kinect.enablePointCloud(true);
+  kinect.setLowThresholdPC(minD);
+  kinect.setHighThresholdPC(maxD);
   kinect.init();
 
   // setup opencv
@@ -107,7 +106,7 @@ void draw() {
   drawTopLayer();
   
   // mask
-  drawOpencvMaskLayer(toggleOpencv);
+  drawOpencvMaskLayer();
   topLayer.mask(mask);
 
   // background layer
@@ -131,9 +130,7 @@ void displayFPS(boolean showFPS) {
 void opencvContour() {
   boolean contourBodyIndex = false;
   opencv.loadImage(kinect.getPointCloudDepthImage());
-  opencv.gray();
   opencv.threshold(threshold);
-  PImage dst = opencv.getOutput();
 
   ArrayList<Contour> contours = opencv.findContours(false, false);
 
@@ -144,15 +141,16 @@ void opencvContour() {
         mask.noStroke();
         mask.fill(0);
         mask.beginShape();
-        for (PVector point : contour.getPolygonApproximation ().getPoints()) {
+        for (PVector point : contour.getPolygonApproximation().getPoints()) {
           mask.vertex(point.x * maskScaleFactor, point.y * maskScaleFactor);
         }
         mask.endShape();
       }
     }
   }
-  kinect.setLowThresholdPC(minD);
-  kinect.setHighThresholdPC(maxD);
+  // comment after threshold callibration
+  // kinect.setLowThresholdPC(minD);
+  // kinect.setHighThresholdPC(maxD);
 }
 
 void drawTopLayer() {
@@ -172,13 +170,11 @@ void drawTopLayer() {
   topLayer.endDraw();
 }
 
-void drawOpencvMaskLayer(boolean useOpencv) {
-  if (useOpencv) {
-    mask.beginDraw();
-    mask.background(255);
-    opencvContour();
-    mask.endDraw();
-  }
+void drawOpencvMaskLayer() {
+  mask.beginDraw();
+  mask.background(255);
+  opencvContour();
+  mask.endDraw();
 }
 
 void drawBgLayer() {
@@ -197,10 +193,6 @@ void drawBgLayer() {
 void keyReleased() {
   if (key == 'f') {
     toggleFPS = !toggleFPS;
-  }
-  if (key == '1') {
-    toggleOpencv = !toggleOpencv;
-  
   }
   if (key == 'h') {
     threshold += 10;
