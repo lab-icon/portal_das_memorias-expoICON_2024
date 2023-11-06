@@ -1,3 +1,14 @@
+// controls:
+// key 'f' to toggle frame rate
+// key 'h' to increase threshold
+// key 'b' to decrease threshold
+// key 'j' to increase minD
+// key 'n' to decrease minD
+// key 'k' to increase maxD
+// key 'm' to decrease maxD
+// key 'g' to increase maskScaleFactor
+// key 'v' to decrease maskScaleFactor
+
 // import libraries
 import KinectPV2.*;
 import gab.opencv.*;
