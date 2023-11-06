@@ -44,7 +44,8 @@ boolean contourBodyIndex = false;
 boolean toggleFPS = true;
 
 void setup() {
-  size(960*2, 360*2, P3D);
+  // size(960*2, 360*2, P3D);
+  fullScreen(P3D);
 
   // setup layers
   topLayer = createGraphics(width, height);  
@@ -148,7 +149,7 @@ void opencvContour() {
   if (contours.size() > 0) {
     for (Contour contour : contours) {
       contour.setPolygonApproximationFactor(polygonFactor);
-      if (contour.numPoints() > 50) {
+      if (contour.numPoints() > 500) {
         mask.noStroke();
         mask.fill(0);
         mask.beginShape();
@@ -168,7 +169,7 @@ void drawTopLayer() {
   topLayer.beginDraw();
   topLayer.background(0);
   for (int i = 0; i < star.length; i++) {
-   star[i].blink(0.05);
+   star[i].blink(0.1);
    star[i].display(topLayer);
   }
   for (int i = 0; i < word.length; i++) {
