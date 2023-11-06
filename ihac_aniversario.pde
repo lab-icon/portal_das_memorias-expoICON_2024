@@ -12,10 +12,12 @@
 // import libraries
 import KinectPV2.*;
 import gab.opencv.*;
+import spout.*;
 
 // declare variables
 KinectPV2 kinect;
 OpenCV opencv;
+Spout spout;
 
 String[] wordList;
 Word word[];
@@ -43,13 +45,14 @@ boolean contourBodyIndex = false;
 boolean toggleFPS = true;
 
 // canvas variables
-int canvasWidth = 1920;
-int canvasHeight = 720;
+int canvasWidth = 3240/2;
+int canvasHeight = 720/2;
 
 void setup() {
-  // size(960*2, 360*2, P3D);
-  fullScreen(P3D);
+   size(720, 720, P3D);
+  //fullScreen(P3D);
   imageMode(CENTER);
+  //textureMode(NORMAL);
 
   // setup layers
   topLayer = createGraphics(canvasWidth, canvasHeight);  
@@ -105,6 +108,11 @@ void setup() {
 
   // setup opencv
   opencv = new OpenCV(this, 512, 424);
+  
+  // setup spout
+  spout = new Spout(this);
+  spout.setSenderName("Spout Processing Sender");
+  frameRate(30);
 }
 
 void loadJSON() {
@@ -131,7 +139,8 @@ void draw() {
   drawBgLayer();
 
   // display the layers
-  image(bgLayer,width/2,height/2);
+  spout.sendTexture(bgLayer);
+  //image(bgLayer,width/2,height/2);
   
   // draw the frame rate
   displayFPS(toggleFPS);
@@ -146,7 +155,6 @@ void displayFPS(boolean showFPS) {
 }
 
 void opencvContour() {
-  boolean contourBodyIndex = false;
   opencv.loadImage(kinect.getPointCloudDepthImage());
   opencv.threshold(threshold);
 
@@ -198,7 +206,7 @@ void drawOpencvMaskLayer() {
 void drawBgLayer() {
   bgLayer.beginDraw();
   bgLayer.background(100, 200, 0);
-  if (random(1) < 0.6) {
+  if (random(1) < 0.2) {
     photo[int(random(photo.length))].changePhoto("fotos_escolhidas_"+photoResolution+"x"+photoResolution+"/foto"+int(random(totalOfPhotos))+".jpg");
   }
   for (int i = 0; i < photo.length; i++) {
