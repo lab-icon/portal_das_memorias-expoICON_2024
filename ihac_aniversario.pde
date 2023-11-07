@@ -12,12 +12,12 @@
 // import libraries
 import KinectPV2.*;
 import gab.opencv.*;
-import spout.*;
+//import spout.*;
 
 // declare variables
 KinectPV2 kinect;
 OpenCV opencv;
-Spout spout;
+//Spout spout;
 
 String[] wordList;
 Word word[];
@@ -49,7 +49,7 @@ int canvasWidth = 3240/2;
 int canvasHeight = 720/2;
 
 void setup() {
-   size(720, 720, P3D);
+   size(3240/2, 720/2, P3D);
   //fullScreen(P3D);
   imageMode(CENTER);
   //textureMode(NORMAL);
@@ -69,27 +69,27 @@ void setup() {
   textAlign(CENTER, CENTER);
   word = new Word[50];
   for (int i = 0; i < word.length; i++) {
-    float x = random(-wordExtraRange, width + wordExtraRange);
-    float y = random(wordVerticalMargin, height -wordVerticalMargin);
+    float x = random(-wordExtraRange, topLayer.width + wordExtraRange);
+    float y = random(wordVerticalMargin, topLayer.height -wordVerticalMargin);
     float z = random(0.5, 1.5);
     float diraction = random(1) < 0.5 ? -1 : 1;
     String firstWord = wordList[int(random(wordList.length))];
-    word[i] = new Word(firstWord, x, y, z, diraction);
+    word[i] = new Word(firstWord, x, y, z, diraction, topLayer);
   }
 
   // load the stars
   star = new Star[500];
   for (int i = 0; i < star.length; i++) {
-    float x = random(0, width);
-    float y = random(0, height);
+    float x = random(0, topLayer.width);
+    float y = random(0, topLayer.height);
     star[i] = new Star(x, y, 1, 3);
   }
 
   // load the photos
   photoResolution = 45;
   totalOfPhotos = 669;
-  int photoClumns = width / photoResolution + 1;
-  int photoRows = height / photoResolution;
+  int photoClumns = bgLayer.width / photoResolution + 1;
+  int photoRows = bgLayer.height / photoResolution;
   int displayedPhotos = photoClumns * photoRows;
   photo = new Photo[displayedPhotos];
   for (int i = 0; i < photo.length; i++) {
@@ -110,8 +110,8 @@ void setup() {
   opencv = new OpenCV(this, 512, 424);
   
   // setup spout
-  spout = new Spout(this);
-  spout.setSenderName("Spout Processing Sender");
+  //spout = new Spout(this);
+  //spout.setSenderName("Spout Processing Sender");
   frameRate(30);
 }
 
@@ -128,6 +128,477 @@ void loadJSON() {
 void draw() {  
   background(0);
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   // top layer
   drawTopLayer();
   
@@ -139,8 +610,8 @@ void draw() {
   drawBgLayer();
 
   // display the layers
-  spout.sendTexture(bgLayer);
-  //image(bgLayer,width/2,height/2);
+  //spout.sendTexture(bgLayer);
+  image(bgLayer,width/2,height/2);
   
   // draw the frame rate
   displayFPS(toggleFPS);
@@ -189,9 +660,9 @@ void drawTopLayer() {
   for (int i = 0; i < word.length; i++) {
     if (word[i].move(1.8)) {
       String nextWord = wordList[int(random(wordList.length))];
-      word[i].resetPosition(nextWord, topLayer.height);
+      word[i].resetPosition(nextWord);
     }
-    word[i].display(topLayer);
+    word[i].display();
   }
   topLayer.endDraw();
 }
