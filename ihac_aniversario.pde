@@ -12,10 +12,12 @@
 // import libraries
 import KinectPV2.*;
 import gab.opencv.*;
+//import spout.*;
 
 // declare variables
 KinectPV2 kinect;
 OpenCV opencv;
+//Spout spout;
 
 String[] wordList;
 Word word[];
@@ -26,8 +28,6 @@ int photoResolution;
 int totalOfPhotos;
 
 float maskScaleFactor = 2.5;
-float maskTranslationX = 0;
-float maskTranslationY = 0;
 
 PGraphics topLayer, bgLayer;
 PGraphics mask;
@@ -43,20 +43,16 @@ boolean contourBodyIndex = false;
 
 // toggleable variables
 boolean toggleFPS = true;
-boolean toggleMaskCalibration = false;
 
 // canvas variables
-// int canvasWidth = 3240/2;
-// int canvasHeight = 720/2;
-int canvasWidth = 1920/2;
+int canvasWidth = 3240/2;
 int canvasHeight = 720/2;
 
 void setup() {
-  //  size(3240/2, 720/2, P3D);
-  size(1920/2, 720/2, P3D);
+   size(3240/2, 720/2, P3D);
   //fullScreen(P3D);
-  frameRate(30);
   imageMode(CENTER);
+  //textureMode(NORMAL);
 
   // setup layers
   topLayer = createGraphics(canvasWidth, canvasHeight);  
@@ -112,6 +108,11 @@ void setup() {
 
   // setup opencv
   opencv = new OpenCV(this, 512, 424);
+  
+  // setup spout
+  //spout = new Spout(this);
+  //spout.setSenderName("Spout Processing Sender");
+  frameRate(30);
 }
 
 void loadJSON() {
@@ -126,6 +127,477 @@ void loadJSON() {
 
 void draw() {  
   background(0);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   // top layer
   drawTopLayer();
@@ -167,7 +639,7 @@ void opencvContour() {
         mask.fill(0);
         mask.beginShape();
         for (PVector point : contour.getPolygonApproximation().getPoints()) {
-          mask.vertex(point.x * maskScaleFactor + maskTranslationX, point.y * maskScaleFactor + maskTranslationY);
+          mask.vertex(point.x * maskScaleFactor, point.y * maskScaleFactor);
         }
         mask.endShape();
       }
@@ -191,12 +663,6 @@ void drawTopLayer() {
       word[i].resetPosition(nextWord);
     }
     word[i].display();
-  }
-  if (toggleMaskCalibration) {
-    topLayer.noFill();
-    topLayer.stroke(0, 255, 0);
-    topLayer.strokeWeight(3);
-    topLayer.rect (maskTranslationX, maskTranslationY, 512 * maskScaleFactor, 424 * maskScaleFactor);
   }
   topLayer.endDraw();
 }
@@ -249,31 +715,12 @@ void keyReleased() {
     maxD -= 10;
     println("maxD: " + maxD);
   }
-  if (key == 'r') {
-    toggleMaskCalibration = !toggleMaskCalibration;
-  }
-  if (key == 'e') {
-    maskScaleFactor += 0.05;
+  if (key == 'g') {
+    maskScaleFactor += 0.1;
     println("maskScaleFactor: " + maskScaleFactor);
   }
-  if (key == 'q') {
-    maskScaleFactor -= 0.05;
+  if (key == 'v') {
+    maskScaleFactor -= 0.1;
     println("maskScaleFactor: " + maskScaleFactor);
-  }
-  if (key == 'w') {
-    maskTranslationY -= 10;
-    println("maskTranslationY: " + maskTranslationY);
-  }
-  if (key == 's') {
-    maskTranslationY += 10;
-    println("maskTranslationY: " + maskTranslationY);
-  }
-  if (key == 'a') {
-    maskTranslationX -= 10;
-    println("maskTranslationX: " + maskTranslationX);
-  }
-  if (key == 'd') {
-    maskTranslationX += 10;
-    println("maskTranslationX: " + maskTranslationX);
   }
 }
