@@ -6,8 +6,12 @@
 // key 'n' to decrease minD
 // key 'k' to increase maxD
 // key 'm' to decrease maxD
-// key 'g' to increase maskScaleFactor
-// key 'v' to decrease maskScaleFactor
+// key 'e' to increase maskScaleFactor
+// key 'q' to decrease maskScaleFactor
+// key 'w' to increase maskTranslateY
+// key 's' to decrease maskTranslateY
+// key 'a' to increase maskTranslateX
+// key 'd' to decrease maskTranslateX
 
 // import libraries
 import KinectPV2.*;
@@ -26,6 +30,8 @@ int photoResolution;
 int totalOfPhotos;
 
 float maskScaleFactor = 2.5;
+float maskTranslateX = 0;
+float maskTranslateY = 0;
 
 PGraphics topLayer, bgLayer;
 PGraphics mask;
@@ -41,6 +47,7 @@ boolean contourBodyIndex = false;
 
 // toggleable variables
 boolean toggleFPS = true;
+boolean toggleMaskCalibration = false;
 
 // canvas variables
 int canvasWidth = 3240/2;
@@ -160,7 +167,7 @@ void opencvContour() {
         mask.fill(0);
         mask.beginShape();
         for (PVector point : contour.getPolygonApproximation().getPoints()) {
-          mask.vertex(point.x * maskScaleFactor, point.y * maskScaleFactor);
+          mask.vertex(point.x * maskScaleFactor + maskTranslateX, point.y * maskScaleFactor + maskTranslateY);
         }
         mask.endShape();
       }
@@ -184,6 +191,12 @@ void drawTopLayer() {
       word[i].resetPosition(nextWord);
     }
     word[i].display();
+  }
+  if (toggleMaskCalibration) {
+    topLayer.noFill();
+    topLayer.stroke(0, 255, 0);
+    topLayer.strokeWeight(3);
+    topLayer.rect(maskTranslateX, maskTranslateY, 512 * maskScaleFactor, 424 * maskScaleFactor);
   }
   topLayer.endDraw();
 }
@@ -236,12 +249,31 @@ void keyReleased() {
     maxD -= 10;
     println("maxD: " + maxD);
   }
-  if (key == 'g') {
-    maskScaleFactor += 0.1;
+  if (key == 'q') {
+    maskScaleFactor -= 0.05;
     println("maskScaleFactor: " + maskScaleFactor);
   }
-  if (key == 'v') {
-    maskScaleFactor -= 0.1;
+  if (key == 'e') {
+    maskScaleFactor += 0.05;
     println("maskScaleFactor: " + maskScaleFactor);
+  }
+  if (key == 'w') {
+    maskTranslateY -= 10;
+    println("maskTranslateY: " + maskTranslateY);
+  } 
+  if (key == 's') {
+    maskTranslateY += 10;
+    println("maskTranslateY: " + maskTranslateY);
+  }
+  if (key == 'a') {
+    maskTranslateX -= 10;
+    println("maskTranslateX: " + maskTranslateX);
+  }
+  if (key == 'd') {
+    maskTranslateX += 10;
+    println("maskTranslateX: " + maskTranslateX);
+  }
+  if (key == 'r') {
+    toggleMaskCalibration = !toggleMaskCalibration;
   }
 }
