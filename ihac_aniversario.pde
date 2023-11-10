@@ -29,9 +29,9 @@ Photo photo[];
 int photoResolution;
 int totalOfPhotos;
 
-float maskScaleFactor = 2.5;
-float maskTranslateX = 0;
-float maskTranslateY = 0;
+float maskScaleFactor = 2;
+float maskTranslateX = -210;
+float maskTranslateY = 290;
 
 PGraphics topLayer, bgLayer;
 PGraphics mask;
@@ -41,8 +41,8 @@ PImage kinectInput;
 //opencv variables
 float polygonFactor = 1;
 int threshold = 30;
-int maxD = 1800;
-int minD = 1200;
+int maxD = 4000;
+int minD = 700;
 boolean contourBodyIndex = false;
 
 // toggleable variables
@@ -54,8 +54,8 @@ int canvasWidth = 3240/2;
 int canvasHeight = 720/2;
 
 void setup() {
-   size(3240/2, 720/2, P3D);
-  //fullScreen(P3D);
+  //  size(3240/2, 720/2, P3D);
+  fullScreen(P3D, 2);
   imageMode(CENTER);
 
   // setup layers
@@ -138,7 +138,6 @@ void draw() {
   drawBgLayer();
 
   // display the layers
-  //spout.sendTexture(bgLayer);
   image(bgLayer,width/2,height/2);
   
   // draw the frame rate
@@ -174,8 +173,8 @@ void opencvContour() {
     }
   }
   // comment after threshold callibration
-  // kinect.setLowThresholdPC(minD);
-  // kinect.setHighThresholdPC(maxD);
+  kinect.setLowThresholdPC(minD);
+  kinect.setHighThresholdPC(maxD);
 }
 
 void drawTopLayer() {
