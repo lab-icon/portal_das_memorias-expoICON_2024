@@ -32,9 +32,9 @@ Photo photo[];
 int photoResolution;
 int totalOfPhotos;
 
-float maskScaleFactor = 2;
-float maskTranslateX = -210;
-float maskTranslateY = 290;
+float maskScaleFactor;
+float maskTranslateX;
+float maskTranslateY;
 
 PGraphics topLayer, bgLayer;
 PGraphics mask;
@@ -43,10 +43,10 @@ PImage kinectInput;
 
 //opencv variables
 float polygonFactor = 1;
-int threshold = 30;
-int maxD = 4000;
-int minD = 700;
-int minPoints = 100;
+int threshold;
+int maxD;
+int minD;
+int minPoints;
 boolean contourBodyIndex = false;
 
 // toggleable variables
@@ -58,9 +58,12 @@ int canvasWidth = 3240/2;
 int canvasHeight = 720/2;
 
 void setup() {
-  //  size(3240/2, 720/2, P3D);
-  fullScreen(P3D, 2);
+   size(3240/2, 720/2, P3D);
+  // fullScreen(P3D, 2);
   imageMode(CENTER);
+
+  // load configurations
+  loadConfig();
 
   // setup layers
   topLayer = createGraphics(canvasWidth, canvasHeight);  
@@ -126,6 +129,30 @@ void loadJSON() {
     String wordText = word.getString("replaced");
     wordList[i] = wordText;
   }
+}
+
+void loadConfig() {
+    JSONObject configJSON = loadJSONObject("data/config.json");
+    threshold = configJSON.getInt("threshold");
+    maxD = configJSON.getInt("maxD");
+    minD = configJSON.getInt("minD");
+    minPoints = configJSON.getInt("minPoints");
+    maskScaleFactor = configJSON.getFloat("maskScaleFactor");
+    maskTranslateX = configJSON.getFloat("maskX");
+    maskTranslateY = configJSON.getFloat("maskY");
+  }
+
+void saveConfig() {
+  JSONObject configJSON = new JSONObject();
+  configJSON.setInt("threshold", threshold);
+  configJSON.setInt("maxD", maxD);
+  configJSON.setInt("minD", minD);
+  configJSON.setInt("minPoints", minPoints);
+  configJSON.setFloat("maskScaleFactor", maskScaleFactor);
+  configJSON.setFloat("maskX", maskTranslateX);
+  configJSON.setFloat("maskY", maskTranslateY);
+  saveJSONObject(configJSON, "data/config.json");
+  println("config saved");
 }
 
 void draw() {  
@@ -286,5 +313,8 @@ void keyReleased() {
   if (key == 'v') {
     minPoints -= 10;
     println("minPoints: " + minPoints);
+  }
+  if (key == '0') {
+    saveConfig();
   }
 }
