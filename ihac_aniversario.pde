@@ -6,6 +6,9 @@
 // key 'n' to decrease minD
 // key 'k' to increase maxD
 // key 'm' to decrease maxD
+// key 'g' to increase minPoints
+// key 'v' to decrease minPoints
+// key 'r' to toggle mask calibration
 // key 'e' to increase maskScaleFactor
 // key 'q' to decrease maskScaleFactor
 // key 'w' to increase maskTranslateY
@@ -43,6 +46,7 @@ float polygonFactor = 1;
 int threshold = 30;
 int maxD = 4000;
 int minD = 700;
+int minPoints = 100;
 boolean contourBodyIndex = false;
 
 // toggleable variables
@@ -161,7 +165,7 @@ void opencvContour() {
   if (contours.size() > 0) {
     for (Contour contour : contours) {
       contour.setPolygonApproximationFactor(polygonFactor);
-      if (contour.numPoints() > 500) {
+      if (contour.numPoints() > minPoints) {
         mask.noStroke();
         mask.fill(0);
         mask.beginShape();
@@ -274,5 +278,13 @@ void keyReleased() {
   }
   if (key == 'r') {
     toggleMaskCalibration = !toggleMaskCalibration;
+  }
+  if (key == 'g') {
+    minPoints += 10;
+    println("minPoints: " + minPoints);
+  }
+  if (key == 'v') {
+    minPoints -= 10;
+    println("minPoints: " + minPoints);
   }
 }
