@@ -197,7 +197,7 @@ void opencvContour() {
         mask.fill(0);
         mask.beginShape();
         for (PVector point : contour.getPolygonApproximation().getPoints()) {
-          mask.vertex(point.x * maskScaleFactor + maskTranslateX, point.y * maskScaleFactor + maskTranslateY);
+          mask.vertex(point.x * -maskScaleFactor + maskTranslateX + 512, point.y * maskScaleFactor + maskTranslateY);
         }
         mask.endShape();
       }
