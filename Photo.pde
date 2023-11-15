@@ -9,11 +9,17 @@ class Photo {
     photo = loadImage(ulr);
   }
   
-  void display(){ 
-   layer.image(photo, xPosition, yPosition);
+  void display(PGraphics layer){
+    if (photo != null) {
+      layer.image(photo, xPosition, yPosition);
+    }
   }
-  
-  void getLayer(PGraphics _layer) {
-    layer = _layer;
+
+  void changePhoto(String url) {
+    if (url != null) {
+      photo = loadImage(url);
+    } else {
+      println("Error: " + url + " is null");
+    }
   }
 }

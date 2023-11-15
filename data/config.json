@@ -1,0 +1,9 @@
+{
+  "maskY": 290,
+  "minD": 1960,
+  "maskX": -210,
+  "maxD": 6000,
+  "maskScaleFactor": 1,
+  "minPoints": 300,
+  "threshold": 70
+}
