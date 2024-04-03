@@ -15,6 +15,7 @@
 // key 's' to decrease maskTranslateY
 // key 'a' to increase maskTranslateX
 // key 'd' to decrease maskTranslateX
+// key '0' to save the configuration
 
 // import libraries
 import KinectPV2.*;
@@ -24,13 +25,7 @@ import gab.opencv.*;
 KinectPV2 kinect;
 OpenCV opencv;
 
-String[] wordList;
-Word word[];
 Star star[];
-Photo photo[];
-
-int photoResolution;
-int totalOfPhotos;
 
 float maskScaleFactor;
 float maskTranslateX;
@@ -54,12 +49,12 @@ boolean toggleFPS = true;
 boolean toggleMaskCalibration = false;
 
 // canvas variables
-int canvasWidth = 3240/2;
-int canvasHeight = 720/2;
+int canvasWidth = 2560/1;
+int canvasHeight = 1080/1;
 
 void setup() {
-   size(3240/2, 720/2, P3D);
-  // fullScreen(P3D, 2);
+  //  size(3240/2, 720/2, P3D);
+  fullScreen(P3D, 2);
   imageMode(CENTER);
 
   // load configurations
@@ -72,21 +67,6 @@ void setup() {
   
   mask = createGraphics(canvasWidth, canvasHeight);
   mask.imageMode(CENTER);
-  
-  // load the words
-  loadJSON();
-  float wordExtraRange = 250;
-  float wordVerticalMargin = 20;
-  textAlign(CENTER, CENTER);
-  word = new Word[50];
-  for (int i = 0; i < word.length; i++) {
-    float x = random(-wordExtraRange, topLayer.width + wordExtraRange);
-    float y = random(wordVerticalMargin, topLayer.height -wordVerticalMargin);
-    float z = random(0.5, 1.5);
-    float diraction = random(1) < 0.5 ? -1 : 1;
-    String firstWord = wordList[int(random(wordList.length))];
-    word[i] = new Word(firstWord, x, y, z, diraction, topLayer);
-  }
 
   // load the stars
   star = new Star[500];
@@ -96,19 +76,6 @@ void setup() {
     star[i] = new Star(x, y, 1, 3);
   }
 
-  // load the photos
-  photoResolution = 45;
-  totalOfPhotos = 669;
-  int photoClumns = bgLayer.width / photoResolution + 1;
-  int photoRows = bgLayer.height / photoResolution;
-  int displayedPhotos = photoClumns * photoRows;
-  photo = new Photo[displayedPhotos];
-  for (int i = 0; i < photo.length; i++) {
-    int x = floor(i / photoRows) * photoResolution;
-    int y = floor(i % photoRows) * photoResolution;
-    photo[i] = new Photo("fotos_escolhidas_"+photoResolution+"x"+photoResolution+"/foto"+int(random(totalOfPhotos))+".jpg", x, y);
-  }
-  
   // setup kinect
   kinect = new KinectPV2(this);  
   kinect.enableDepthImg(true);
@@ -119,16 +86,6 @@ void setup() {
 
   // setup opencv
   opencv = new OpenCV(this, 512, 424);
-}
-
-void loadJSON() {
-  JSONArray wordJSON = loadJSONArray("data/wordList.json");
-  wordList = new String[wordJSON.size()];
-  for (int i = 0; i < wordJSON.size(); i++) {
-    JSONObject word = wordJSON.getJSONObject(i);
-    String wordText = word.getString("replaced");
-    wordList[i] = wordText;
-  }
 }
 
 void loadConfig() {
@@ -215,13 +172,7 @@ void drawTopLayer() {
    star[i].blink(0.1);
    star[i].display(topLayer);
   }
-  for (int i = 0; i < word.length; i++) {
-    if (word[i].move(1.8)) {
-      String nextWord = wordList[int(random(wordList.length))];
-      word[i].resetPosition(nextWord);
-    }
-    word[i].display();
-  }
+  
   if (toggleMaskCalibration) {
     topLayer.noFill();
     topLayer.stroke(0, 255, 0);
@@ -241,16 +192,12 @@ void drawOpencvMaskLayer() {
 void drawBgLayer() {
   bgLayer.beginDraw();
   bgLayer.background(100, 200, 0);
-  if (random(1) < 0.2) {
-    photo[int(random(photo.length))].changePhoto("fotos_escolhidas_"+photoResolution+"x"+photoResolution+"/foto"+int(random(totalOfPhotos))+".jpg");
-  }
-  for (int i = 0; i < photo.length; i++) {
-    photo[i].display(bgLayer);
-  }
+  
   bgLayer.image(topLayer, 0, 0);
   bgLayer.endDraw();
 }
 
+// Controls
 void keyReleased() {
   if (key == 'f') {
     toggleFPS = !toggleFPS;
