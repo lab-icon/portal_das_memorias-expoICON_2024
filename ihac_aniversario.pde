@@ -18,8 +18,8 @@
 // key '0' to save the configuration
 
 // import libraries
-import KinectPV2.*;
-import gab.opencv.*;
+import KinectPV2.*;  // get kinect data
+import gab.opencv.*; // uses kinect data to create mask
 
 // declare variables
 KinectPV2 kinect;
@@ -48,7 +48,7 @@ boolean contourBodyIndex = false;
 boolean toggleFPS = true;
 boolean toggleMaskCalibration = false;
 
-// canvas variables
+// canvas resolution variables
 int canvasWidth = 2560/1;
 int canvasHeight = 1080/1;
 
@@ -113,20 +113,20 @@ void saveConfig() {
 }
 
 void draw() {  
-  background(0);
-
   // top layer
   drawTopLayer();
+  image(topLayer, width/2, height/2);
   
   // mask
   drawOpencvMaskLayer();
-  topLayer.mask(mask);
+  image(mask, width/2, height/2);
+  // topLayer.mask(mask);
 
   // background layer
-  drawBgLayer();
+  // drawBgLayer();
 
   // display the layers
-  image(bgLayer,width/2,height/2);
+  // image(bgLayer,width/2,height/2);
   
   // draw the frame rate
   displayFPS(toggleFPS);
@@ -151,7 +151,7 @@ void opencvContour() {
       contour.setPolygonApproximationFactor(polygonFactor);
       if (contour.numPoints() > minPoints) {
         mask.noStroke();
-        mask.fill(0);
+        mask.fill(30, 120, 80, 5);
         mask.beginShape();
         for (PVector point : contour.getPolygonApproximation().getPoints()) {
           mask.vertex(point.x * -maskScaleFactor + maskTranslateX + 512, point.y * maskScaleFactor + maskTranslateY);
@@ -184,18 +184,18 @@ void drawTopLayer() {
 
 void drawOpencvMaskLayer() {
   mask.beginDraw();
-  mask.background(255);
+  // mask.background(0, 5);
   opencvContour();
   mask.endDraw();
 }
 
-void drawBgLayer() {
-  bgLayer.beginDraw();
-  bgLayer.background(100, 200, 0);
+// void drawBgLayer() {
+//   bgLayer.beginDraw();
+//   bgLayer.background(100, 200, 0);
   
-  bgLayer.image(topLayer, 0, 0);
-  bgLayer.endDraw();
-}
+//   bgLayer.image(topLayer, 0, 0);
+//   bgLayer.endDraw();
+// }
 
 // Controls
 void keyReleased() {
